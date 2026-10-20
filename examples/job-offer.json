@@ -1,0 +1,83 @@
+{
+  "title": "Stay, switch, or go freelance?",
+  "question": "Should I accept the remote senior role at a 40-person startup, stay at my current company, or go freelance?",
+  "lang": "en",
+  "decided_by": "Me, with input from my partner",
+  "deadline": "2026-11-06 (offer expires)",
+  "reversibility": "one-way",
+  "gates": [
+    {"id": "runway", "label": "Keeps 6+ months of savings untouched"},
+    {"id": "family", "label": "No relocation"}
+  ],
+  "options": [
+    {"id": "status-quo", "name": "Stay where I am", "summary": "Same team, promotion review in March", "gates": {"runway": true, "family": true}},
+    {"id": "startup", "name": "Join the startup", "summary": "Remote, +18% base, small equity grant", "gates": {"runway": true, "family": true}},
+    {"id": "freelance", "name": "Go freelance", "summary": "Two warm leads, no signed contract", "gates": {"runway": false, "family": true}},
+    {"id": "big-co", "name": "Re-interview at the big company", "summary": "Offer likely in ~6 weeks, hybrid 3 days", "gates": {"runway": true, "family": true}}
+  ],
+  "criteria": [
+    {"id": "growth", "label": "Skill growth", "weight": 30, "anchors": {"1": "Same work as today", "3": "Some new scope", "5": "Owns a new area end to end"}},
+    {"id": "money", "label": "Income, 2 years", "weight": 25, "anchors": {"1": "Less than today", "3": "About today", "5": "+25% or more"}},
+    {"id": "stability", "label": "Stability", "weight": 25, "anchors": {"1": "Could vanish in a year", "3": "Normal market risk", "5": "Very secure"}},
+    {"id": "life", "label": "Daily life", "weight": 20, "anchors": {"1": "Long commute, late nights", "3": "Fine", "5": "Remote, flexible hours"}}
+  ],
+  "scores": {
+    "status-quo": {
+      "growth": {"score": 2, "evidence": "M", "note": "Same stack for 3 years", "low": 2, "high": 3},
+      "money": {"score": 3, "evidence": "M", "note": "Known salary band"},
+      "stability": {"score": 4, "evidence": "E", "note": "Profitable, but a reorg is rumored", "low": 3, "high": 4},
+      "life": {"score": 3, "evidence": "M", "note": "Two office days"}
+    },
+    "startup": {
+      "growth": {"score": 5, "evidence": "J", "note": "Would own the data platform", "low": 4, "high": 5},
+      "money": {"score": 4, "evidence": "M", "note": "+18% base, equity treated as zero"},
+      "stability": {"score": 2, "evidence": "E", "note": "14 months runway per the CEO", "low": 1, "high": 3},
+      "life": {"score": 5, "evidence": "M", "note": "Fully remote"}
+    },
+    "freelance": {
+      "growth": {"score": 4, "evidence": "J", "note": "Varied work, mostly sales", "low": 3, "high": 4},
+      "money": {"score": 3, "evidence": "J", "note": "Wide range", "low": 1, "high": 5},
+      "stability": {"score": 1, "evidence": "E", "note": "No signed client"},
+      "life": {"score": 4, "evidence": "J", "note": "Flexible, but irregular"}
+    },
+    "big-co": {
+      "growth": {"score": 3, "evidence": "J", "note": "Bigger systems, narrower role"},
+      "money": {"score": 5, "evidence": "E", "note": "Public pay data for the level", "low": 4, "high": 5},
+      "stability": {"score": 4, "evidence": "E", "note": "Had layoffs last year", "low": 3, "high": 5},
+      "life": {"score": 2, "evidence": "M", "note": "3 office days, 50 min each way"}
+    }
+  },
+  "ledgers": [
+    {"id": "cash", "label": "Money", "unit": "first-year change"},
+    {"id": "time", "label": "Time", "unit": "hours per week"},
+    {"id": "risk", "label": "Worst plausible outcome", "unit": ""}
+  ],
+  "costs": {
+    "status-quo": {"cash": "+0 (raise possible in March)", "time": "-0", "risk": "Skills stall; harder move later"},
+    "startup": {"cash": "+18% base", "time": "+5 h saved commuting", "risk": "Company folds; job hunt in 12-18 months"},
+    "freelance": {"cash": "-40% to +30%", "time": "+8 h on sales and admin", "risk": "Savings drained"},
+    "big-co": {"cash": "+25% total comp", "time": "-5 h commuting", "risk": "Offer never comes; startup offer gone"}
+  },
+  "lenses": [
+    {"name": "The skeptic", "view": "You are scoring the startup's growth with pure judgment. Ask to speak with two engineers who left in the past year."},
+    {"name": "Me in five years", "view": "I will not regret a riskier job at 32 if my savings survive it. I will regret three more years on the same stack."},
+    {"name": "A friend who knows me", "view": "You always say you want to build things. The startup is the only option where that is the job."}
+  ],
+  "premortem": [
+    {"option": "startup", "story": "Funding round fails in month 10; layoffs hit the newest hires.", "signal": "Board meeting slips, hiring freeze, runway updates stop.", "mitigation": "Keep 9 months of savings; refresh my network every quarter."},
+    {"option": "startup", "story": "The 'own the platform' scope was a pitch; I end up on support duty.", "signal": "First 60 days without a roadmap I write.", "mitigation": "Get the scope in writing in the offer letter."}
+  ],
+  "verdict": {
+    "choice": "startup",
+    "why": "Wins on growth and daily life, which carry half the weight, and survives the gate. The lead depends on stability weight; that is the part to verify.",
+    "tripwires": [
+      "Runway falls below 9 months with no round in sight: start interviewing.",
+      "After 90 days I still do not own a roadmap: escalate, then leave if nothing changes."
+    ],
+    "what_would_change_my_mind": [
+      "Ex-employees describe churn or broken promises.",
+      "The big company makes an offer before 2026-11-06."
+    ],
+    "review_on": "2027-02-01"
+  }
+}

@@ -1,0 +1,82 @@
+{
+  "title": "CI 要不要从自建 Jenkins 迁走？",
+  "question": "8 人后端团队，自建 Jenkins 经常卡队列、没人愿意维护。是继续修 Jenkins、迁到托管 CI，还是自建 Runner 跑托管编排？",
+  "lang": "zh-CN",
+  "decided_by": "后端组技术负责人",
+  "deadline": "2026-11-15（下季度预算锁定前）",
+  "reversibility": "two-way",
+  "gates": [
+    {"id": "intranet", "label": "能访问内网制品库"},
+    {"id": "budget", "label": "年费用不超过 6 万元"}
+  ],
+  "options": [
+    {"id": "status-quo", "name": "继续用 Jenkins，花两周整修", "summary": "升级插件、加两台构建机", "gates": {"intranet": true, "budget": true}},
+    {"id": "hosted", "name": "全部迁到托管 CI", "summary": "用托管 Runner，按分钟计费", "gates": {"intranet": false, "budget": true}},
+    {"id": "hybrid", "name": "托管编排 + 自建 Runner", "summary": "流水线写在仓库里，Runner 放内网", "gates": {"intranet": true, "budget": true}},
+    {"id": "wait", "name": "先不动，半年后再议", "summary": "只修最痛的两个问题", "gates": {"intranet": true, "budget": true}}
+  ],
+  "criteria": [
+    {"id": "speed", "label": "反馈速度", "weight": 30, "anchors": {"1": "排队常超 20 分钟", "3": "10 分钟内出结果", "5": "5 分钟内出结果"}},
+    {"id": "upkeep", "label": "维护负担", "weight": 30, "anchors": {"1": "每周要人专门盯", "3": "每月半天", "5": "基本不用管"}},
+    {"id": "cost", "label": "费用", "weight": 20, "anchors": {"1": "超过 5 万/年", "3": "约 3 万/年", "5": "1 万/年以内"}},
+    {"id": "migration", "label": "迁移风险", "weight": 20, "anchors": {"1": "要停摆一周以上", "3": "可分批迁", "5": "几乎无感"}}
+  ],
+  "scores": {
+    "status-quo": {
+      "speed": {"score": 3, "evidence": "E", "note": "加机器后预计排队减半", "low": 2, "high": 3},
+      "upkeep": {"score": 1, "evidence": "M", "note": "过去 3 个月平均每周 4 小时"},
+      "cost": {"score": 4, "evidence": "M", "note": "两台机器约 1.5 万/年"},
+      "migration": {"score": 5, "evidence": "M", "note": "不用迁"}
+    },
+    "hosted": {
+      "speed": {"score": 5, "evidence": "E", "note": "试跑 20 次，中位数 4 分钟"},
+      "upkeep": {"score": 5, "evidence": "J", "note": "无机器要维护"},
+      "cost": {"score": 2, "evidence": "E", "note": "按现有构建量估约 4.5 万/年"},
+      "migration": {"score": 3, "evidence": "J", "note": "37 条流水线要重写"}
+    },
+    "hybrid": {
+      "speed": {"score": 4, "evidence": "M", "note": "试点仓库 6 分钟", "low": 4, "high": 5},
+      "upkeep": {"score": 4, "evidence": "E", "note": "只维护 Runner 镜像", "low": 3, "high": 4},
+      "cost": {"score": 4, "evidence": "E", "note": "复用现有机器，约 1.2 万/年"},
+      "migration": {"score": 3, "evidence": "J", "note": "可按仓库分批迁", "low": 2, "high": 4}
+    },
+    "wait": {
+      "speed": {"score": 2, "evidence": "M", "note": "现状"},
+      "upkeep": {"score": 2, "evidence": "M", "note": "现状略好"},
+      "cost": {"score": 5, "evidence": "M", "note": "几乎零新增"},
+      "migration": {"score": 5, "evidence": "M", "note": "不用迁"}
+    }
+  },
+  "ledgers": [
+    {"id": "cash", "label": "钱", "unit": "每年"},
+    {"id": "time", "label": "人力", "unit": "迁移 + 每月维护"},
+    {"id": "risk", "label": "最坏情况", "unit": ""}
+  ],
+  "costs": {
+    "status-quo": {"cash": "约 1.5 万", "time": "2 周整修 + 每月 16 小时", "risk": "整修后半年又烂回去"},
+    "hosted": {"cash": "约 4.5 万", "time": "4 周迁移 + 每月 2 小时", "risk": "内网制品库连不上，发布卡死"},
+    "hybrid": {"cash": "约 1.2 万", "time": "3 周迁移 + 每月 4 小时", "risk": "Runner 镜像没人更新，变成新的 Jenkins"},
+    "wait": {"cash": "约 0", "time": "每月 16 小时", "risk": "有人因为 CI 太慢离职"}
+  },
+  "lenses": [
+    {"name": "唱反调的人", "view": "维护负担的评分里有估算也有判断，先把过去 3 个月 Jenkins 的工时从工单里统计出来再说。"},
+    {"name": "半年后的团队", "view": "最怕的不是选错，而是迁了一半停下来，两套系统一起维护。"},
+    {"name": "新入职的同事", "view": "流水线写在仓库里、能本地复现，比任何构建速度都更让人安心。"}
+  ],
+  "premortem": [
+    {"option": "hybrid", "story": "迁了 12 个仓库后大家去赶需求，剩下的永远留在 Jenkins。", "signal": "连续两周没有新仓库迁移。", "mitigation": "每个迭代固定迁 4 个仓库，第 6 周关掉 Jenkins 的新建入口。"}
+  ],
+  "verdict": {
+    "choice": "hybrid",
+    "why": "在速度和维护两项最重的标准上都不差，费用最低，而且过了内网门槛。属于双向门：先迁 3 个仓库试 2 周，不行就退回。",
+    "tripwires": [
+      "试点期间中位构建时间超过 8 分钟：停下来查原因。",
+      "第 6 周还有超过一半的仓库没迁：重新评估，或者干脆回到整修 Jenkins。"
+    ],
+    "what_would_change_my_mind": [
+      "托管 CI 支持安全接入内网制品库。",
+      "Runner 维护工时实测超过每月 8 小时。"
+    ],
+    "review_on": "2027-01-10"
+  }
+}
